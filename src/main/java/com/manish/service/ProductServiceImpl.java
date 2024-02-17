@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	@Transactional
-	public List<Productsorted> getAllSortedProducts(String sortBy) {
+	public List<Productsorted> getAllSortedProducts(String sortBy, int limit, int offset) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 
 		String queryString = "SELECT p.product_code, p.product_description, p.product_name, \n"
@@ -54,11 +54,12 @@ public class ProductServiceImpl implements ProductService {
 				+ " c.category_code, c.category_name FROM Product p \n"
 				+ " INNER JOIN Price p2 ON p.product_code = p2.product_code  \n"
 				+ " INNER JOIN Stock s ON s.product_code = p.product_code  \n"
-				+ " INNER JOIN Category c ON c.category_code = p.category ORDER BY "+sortBy;
+				+ " INNER JOIN Category c ON c.category_code = p.category ORDER BY " + sortBy;
 
 		SQLQuery query = session.createSQLQuery(queryString);
 		query.setResultTransformer(Transformers.aliasToBean(Productsorted.class));
-
+		query.setFirstResult(offset);
+		query.setMaxResults(limit);
 		List<Productsorted> products = query.list();
 		return products;
 	}

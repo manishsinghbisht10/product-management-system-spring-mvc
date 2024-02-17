@@ -44,6 +44,10 @@ h1 {
 .add {
 	margin: 10px 0;
 }
+
+.fas:hover {
+	background-color: yellow;
+}
 </style>
 </head>
 <body>
@@ -54,7 +58,10 @@ h1 {
 		<a style="text-decoration: none" href="home">Refresh</a>
 	</button>
 	<h1>Product List</h1>
-
+	<c:set var="count" value="${count}" />
+	<c:set var="limit" value="${limit}" />
+	<c:set var="offset" value="${offset}" />
+	<c:set var="sortBy" value="${sortBy}" />
 	<div>
 		<table class="table table-striped"">
 			<thead>
@@ -80,7 +87,7 @@ h1 {
 			<tbody>
 				<c:forEach items="${productList}" var="product">
 					<tr>
-						<th scope="row">${product.productName }</th>
+						<td>${product.productName }</td>
 						<td>${product.productCode }</td>
 						<td>${product.productDescription }</td>
 						<td>${product.categoryName }</td>
@@ -94,21 +101,24 @@ h1 {
 		</table>
 	</div>
 	<div class=pagination>
-		<button type="button" class=" previous btn btn-light">
-			<a style="text-decoration: none" href="https://www.w3schools.com">Previous</a>
-		</button>
-		<button type="button" class=" next btn btn-light">
-			<a style="text-decoration: none" href="https://www.w3schools.com">Next</a>
-		</button>
+		<button type="button" class=" previous btn btn-light previous">
+			Previous</button>
+		<button type="button" class=" next btn btn-light next">Next</button>
 	</div>
 
 	<script>
+		let offset = ${offset};
+		let limit = ${limit};
+		let count = ${count};
+		console.log('Offset:', offset);
+		console.log('Limit:', limit);
+		console.log('Count:', count);
 		document
 				.getElementById('downArrow1')
 				.addEventListener(
 						'click',
 						function() {
-							window.location.href = "/product/productSort?sortBy=product_name";
+							window.location.href = "/product/productSort?sortBy=product_name&limit=10&offset=0";
 						});
 
 		document
@@ -116,7 +126,7 @@ h1 {
 				.addEventListener(
 						'click',
 						function() {
-							window.location.href = "/product/productSort?sortBy=product_code";
+							window.location.href = "/product/productSort?sortBy=product_code&limit=${limit}&offset=${offset}";
 						});
 
 		document
@@ -124,7 +134,7 @@ h1 {
 				.addEventListener(
 						'click',
 						function() {
-							window.location.href = "/product/productSort?sortBy=product_description";
+							window.location.href = "/product/productSort?sortBy=product_description&limit=${limit}&offset=${offset}";
 						});
 
 		document
@@ -132,7 +142,7 @@ h1 {
 				.addEventListener(
 						'click',
 						function() {
-							window.location.href = "/product/productSort?sortBy=category_name";
+							window.location.href = "/product/productSort?sortBy=category_name&limit=${limit}&offset=${offset}";
 						});
 
 		document
@@ -140,7 +150,7 @@ h1 {
 				.addEventListener(
 						'click',
 						function() {
-							window.location.href = "/product/productSort?sortBy=product_price";
+							window.location.href = "/product/productSort?sortBy=product_price&limit=${limit}&offset=${offset}";
 						});
 
 		document
@@ -148,7 +158,7 @@ h1 {
 				.addEventListener(
 						'click',
 						function() {
-							window.location.href = "/product/productSort?sortBy=currency";
+							window.location.href = "/product/productSort?sortBy=currency&limit=${limit}&offset=${offset}";
 						});
 
 		document
@@ -156,7 +166,7 @@ h1 {
 				.addEventListener(
 						'click',
 						function() {
-							window.location.href = "/product/productSort?sortBy=inventory_available";
+							window.location.href = "/product/productSort?sortBy=inventory_available&limit=${limit}&offset=${offset}";
 						});
 
 		document
@@ -164,8 +174,27 @@ h1 {
 				.addEventListener(
 						'click',
 						function() {
-							window.location.href = "/product/productSort?sortBy=location";
+							window.location.href = "/product/productSort?sortBy=location&limit=${limit}&offset=${offset}";
 						});
+		if ((offset - 10) >= 0) {
+			document
+					.querySelector('.previous')
+					.addEventListener(
+							'click',
+							function() {
+								window.location.href = "/product/productSort?sortBy=location&limit=${limit}&offset=${offset}-10";
+							});
+		}
+
+		if ((offset + 10) < count) {
+			document
+					.querySelector('.next')
+					.addEventListener(
+							'click',
+							function() {
+								window.location.href = "/product/productSort?sortBy=location&limit=${limit}&offset=${offset}+10";
+							});
+		}
 	</script>
 </body>
 </html>

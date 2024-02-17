@@ -11,7 +11,7 @@ public interface ProductService {
 
 	List<Product> getAllProducts();
 
-	List<Productsorted> getAllSortedProducts(String sortBy);
+	List<Productsorted> getAllSortedProducts(String sortBy, int limit, int offset);
 
 	Product getProduct(String productCode);
 }
