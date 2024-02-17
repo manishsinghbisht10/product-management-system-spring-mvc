@@ -22,16 +22,28 @@
 }
 
 h1 {
-	text-align: center
+	display: inline-block;
+	margin-left: 37%;
+	margin-bottom: 0;
+	margin-top: 0;
 }
 
 .mb-3 {
 	margin-bottom: 10px;
 }
+
+.home {
+	display: inline-block;
+	margin-top: 0;
+	margin-left: 1%;
+}
 </style>
 
 </head>
 <body>
+	<button type="button" class="home add btn btn-light">
+		<a style="text-decoration: none" href="home">Home</a>
+	</button>
 	<h1>Add Product</h1>
 	<div class="card-div">
 		<div class="card" style="width: 25rem;">

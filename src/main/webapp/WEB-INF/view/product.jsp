@@ -63,7 +63,7 @@ h1 {
 	<c:set var="offset" value="${offset}" />
 	<c:set var="sortBy" value="${sortBy}" />
 	<div>
-		<table class="table table-striped"">
+		<table class="table table-striped">
 			<thead>
 				<tr>
 					<th scope="col">Product Name <i id="downArrow1"
