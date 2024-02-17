@@ -46,7 +46,7 @@ h1 {
 }
 
 .fas:hover {
-	background-color: yellow;
+	cursor: pointer;
 }
 </style>
 </head>
@@ -107,9 +107,18 @@ h1 {
 	</div>
 
 	<script>
-		let offset = ${offset};
-		let limit = ${limit};
-		let count = ${count};
+		let offset = $
+		{
+			offset
+		};
+		let limit = $
+		{
+			limit
+		};
+		let count = $
+		{
+			count
+		};
 		console.log('Offset:', offset);
 		console.log('Limit:', limit);
 		console.log('Count:', count);
