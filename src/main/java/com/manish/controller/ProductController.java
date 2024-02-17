@@ -102,8 +102,9 @@ public class ProductController {
 		theModel.addAttribute("product", productService.getProduct(productCode));
 	}
 
-	@RequestMapping(path = "/productSort", method = RequestMethod.GET) 
-	public String getSortedProduct(Model theModel,@RequestParam("sortBy") String sortBy) {
+	@RequestMapping(path = "/productSort", method = RequestMethod.GET)
+	public String getSortedProduct(Model theModel,
+			@RequestParam(value = "sortBy", defaultValue = "", required = false) String sortBy) {
 		List<Productsorted> productDB = productService.getAllSortedProducts(sortBy);
 
 		List<ProductResponse> productLists = new ArrayList<>();

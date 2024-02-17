@@ -11,6 +11,14 @@
 	href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
 	integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
 	crossorigin="anonymous">
+<link
+	href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css"
+	rel="stylesheet">
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+	rel="stylesheet">
+<!-- Include jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
 /* body {
 	background-color: #F0F8FF;
@@ -42,20 +50,31 @@ h1 {
 	<button type="button" class="add btn btn-light">
 		<a style="text-decoration: none" href="add">New Product</a>
 	</button>
+	<button type="button" class="add btn btn-light">
+		<a style="text-decoration: none" href="home">Refresh</a>
+	</button>
 	<h1>Product List</h1>
 
 	<div>
 		<table class="table table-striped"">
 			<thead>
 				<tr>
-					<th scope="col">Name</th>
-					<th scope="col">Code</th>
-					<th scope="col">Description</th>
-					<th scope="col">Category</th>
-					<th scope="col">Price</th>
-					<th scope="col">Currency</th>
-					<th scope="col">Stock/Inventory</th>
-					<th scope="col">Location</th>
+					<th scope="col">Product Name <i id="downArrow1"
+						class="fas fa-chevron-down"></i></th>
+					<th scope="col">Product Code <i id="downArrow2"
+						class="fas fa-chevron-down"></i></th>
+					<th scope="col">Product Description <i id="downArrow3"
+						class="fas fa-chevron-down"></i></th>
+					<th scope="col">Category Name<i id="downArrow4"
+						class="fas fa-chevron-down"></i></th>
+					<th scope="col">Price <i id="downArrow5"
+						class="fas fa-chevron-down"></i></th>
+					<th scope="col">Currency <i id="downArrow6"
+						class="fas fa-chevron-down"></i></th>
+					<th scope="col">Stock/Inventory <i id="downArrow7"
+						class="fas fa-chevron-down"></i></th>
+					<th scope="col">Location <i id="downArrow8"
+						class="fas fa-chevron-down"></i></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -83,6 +102,70 @@ h1 {
 		</button>
 	</div>
 
+	<script>
+		document
+				.getElementById('downArrow1')
+				.addEventListener(
+						'click',
+						function() {
+							window.location.href = "/product/productSort?sortBy=product_name";
+						});
 
+		document
+				.getElementById('downArrow2')
+				.addEventListener(
+						'click',
+						function() {
+							window.location.href = "/product/productSort?sortBy=product_code";
+						});
+
+		document
+				.getElementById('downArrow3')
+				.addEventListener(
+						'click',
+						function() {
+							window.location.href = "/product/productSort?sortBy=product_description";
+						});
+
+		document
+				.getElementById('downArrow4')
+				.addEventListener(
+						'click',
+						function() {
+							window.location.href = "/product/productSort?sortBy=category_name";
+						});
+
+		document
+				.getElementById('downArrow5')
+				.addEventListener(
+						'click',
+						function() {
+							window.location.href = "/product/productSort?sortBy=product_price";
+						});
+
+		document
+				.getElementById('downArrow6')
+				.addEventListener(
+						'click',
+						function() {
+							window.location.href = "/product/productSort?sortBy=currency";
+						});
+
+		document
+				.getElementById('downArrow7')
+				.addEventListener(
+						'click',
+						function() {
+							window.location.href = "/product/productSort?sortBy=inventory_available";
+						});
+
+		document
+				.getElementById('downArrow8')
+				.addEventListener(
+						'click',
+						function() {
+							window.location.href = "/product/productSort?sortBy=location";
+						});
+	</script>
 </body>
 </html>
