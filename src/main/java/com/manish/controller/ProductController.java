@@ -9,11 +9,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import com.manish.Entity.Category;
 import com.manish.Entity.Price;
 import com.manish.Entity.Product;
 import com.manish.Entity.Stock;
 import com.manish.model.ProductResponse;
+import com.manish.model.Productsorted;
 import com.manish.model.SaveProduct;
 import com.manish.service.ProductService;
 
@@ -94,12 +96,38 @@ public class ProductController {
 		return "addProduct";
 	}
 
-	/**
-	 * @RequestMapping(path = "/test", method = RequestMethod.GET) public void
-	 *                      test() { int id=1;
-	 *                      System.out.println(productService.getProduct(id).toString());
-	 * 
-	 *                      }
-	 **/
+	@RequestMapping(path = "/product", method = RequestMethod.GET)
+	public void getProduct(Model theModel, @RequestParam("productCode") String productCode) {
+
+		theModel.addAttribute("product", productService.getProduct(productCode));
+	}
+
+	@RequestMapping(path = "/productSort", method = RequestMethod.GET) 
+	public String getSortedProduct(Model theModel,@RequestParam("sortBy") String sortBy) {
+		List<Productsorted> productDB = productService.getAllSortedProducts(sortBy);
+
+		List<ProductResponse> productLists = new ArrayList<>();
+
+		for (Productsorted p : productDB) {
+			ProductResponse productResponse = new ProductResponse();
+
+			productResponse.setProductName(p.getProduct_name());
+			productResponse.setProductDescription(p.getProduct_description());
+			productResponse.setProductCode(p.getProduct_code());
+
+			productResponse.setCategoryName(p.getCategory_name());
+
+			productResponse.setCurrency(p.getCurrency());
+			productResponse.setPrice(p.getProduct_price());
+
+			productResponse.setLocation(p.getLocation());
+			productResponse.setInventory(p.getInventory_available());
+			productLists.add(productResponse);
+
+		}
+		theModel.addAttribute("count", productLists.size());
+		theModel.addAttribute("productList", productLists);
+		return "product";
+	}
 
 }

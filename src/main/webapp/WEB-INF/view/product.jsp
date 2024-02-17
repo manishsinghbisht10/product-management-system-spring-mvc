@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>producy list</title>
+<title>Products list</title>
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
 	integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
@@ -18,6 +18,7 @@
 .table {
 	margin: 25px auto;
 	width: 80%;
+	border: 1px solid black;
 }
 
 h1 {

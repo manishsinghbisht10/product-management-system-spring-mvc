@@ -3,6 +3,7 @@ package com.manish.service;
 import java.util.List;
 
 import com.manish.Entity.Product;
+import com.manish.model.Productsorted;
 
 public interface ProductService {
 
@@ -10,5 +11,7 @@ public interface ProductService {
 
 	List<Product> getAllProducts();
 
-	Product getProduct(int id);
+	List<Productsorted> getAllSortedProducts(String sortBy);
+
+	Product getProduct(String productCode);
 }
