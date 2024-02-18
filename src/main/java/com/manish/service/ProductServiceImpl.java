@@ -2,8 +2,8 @@ package com.manish.service;
 
 import java.util.List;
 
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -15,6 +15,7 @@ import com.manish.model.Productsorted;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
+@SuppressWarnings("deprecation")
 @Repository
 public class ProductServiceImpl implements ProductService {
 
@@ -58,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
 				+ " INNER JOIN Stock s ON s.product_code = p.product_code  \n"
 				+ " INNER JOIN Category c ON c.category_code = p.category ORDER BY " + sortBy;
 
-		SQLQuery query = session.createSQLQuery(queryString);
+		Query query = session.createNativeQuery(queryString);
 		query.setResultTransformer(Transformers.aliasToBean(Productsorted.class));
 		query.setFirstResult(offset);
 		query.setMaxResults(limit);

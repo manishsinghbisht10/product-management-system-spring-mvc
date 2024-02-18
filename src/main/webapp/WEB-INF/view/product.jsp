@@ -195,7 +195,7 @@ h1 {
 				.addEventListener(
 						'click',
 						function() {
-							if ( ${offset + 4} >= 0) {
+							if ( ${offset + 4} > 4) {
 								window.location.href = "/product/productSort?sortBy=${sortBy}&limit=${limit}&offset=${offset-4}";
 							}
 						});
