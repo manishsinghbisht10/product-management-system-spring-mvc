@@ -57,10 +57,10 @@ public class ProductController {
 
 		}
 
-		theModel.addAttribute("limit", 10);
+		theModel.addAttribute("limit", 4);
 		theModel.addAttribute("offset", 0);
 		theModel.addAttribute("sortBy", "");
-		theModel.addAttribute("count", productLists.size());
+		theModel.addAttribute("count", productService.getCount());
 		theModel.addAttribute("productList", productLists);
 		return "product";
 	}
@@ -109,7 +109,7 @@ public class ProductController {
 	@RequestMapping(path = "/productSort", method = RequestMethod.GET)
 	public String getSortedProduct(Model theModel,
 			@RequestParam(value = "sortBy", defaultValue = "", required = false) String sortBy,
-			@RequestParam(value = "limit", defaultValue = "10", required = false) int limit,
+			@RequestParam(value = "limit", defaultValue = "4", required = false) int limit,
 			@RequestParam(value = "offset", defaultValue = "0", required = false) int offset) {
 		List<Productsorted> productDB = productService.getAllSortedProducts(sortBy, limit, offset);
 
@@ -132,7 +132,7 @@ public class ProductController {
 			productLists.add(productResponse);
 
 		}
-		theModel.addAttribute("count", productLists.size());
+		theModel.addAttribute("count", productService.getCount());
 		theModel.addAttribute("limit", limit);
 		theModel.addAttribute("offset", offset);
 		theModel.addAttribute("sortBy", sortBy);

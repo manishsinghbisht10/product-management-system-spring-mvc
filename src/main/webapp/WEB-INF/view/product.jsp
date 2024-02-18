@@ -119,6 +119,10 @@ h1 {
 		{
 			count
 		};
+		let sortBy = $
+		{
+			'sortBy'
+		};
 		console.log('Offset:', offset);
 		console.log('Limit:', limit);
 		console.log('Count:', count);
@@ -127,7 +131,7 @@ h1 {
 				.addEventListener(
 						'click',
 						function() {
-							window.location.href = "/product/productSort?sortBy=product_name&limit=10&offset=0";
+							window.location.href = "/product/productSort?sortBy=product_name&limit=${limit}&offset=${offset}";
 						});
 
 		document
@@ -185,25 +189,28 @@ h1 {
 						function() {
 							window.location.href = "/product/productSort?sortBy=location&limit=${limit}&offset=${offset}";
 						});
-		if ((offset - 10) >= 0) {
-			document
-					.querySelector('.previous')
-					.addEventListener(
-							'click',
-							function() {
-								window.location.href = "/product/productSort?sortBy=location&limit=${limit}&offset=${offset}-10";
-							});
-		}
 
-		if ((offset + 10) < count) {
-			document
-					.querySelector('.next')
-					.addEventListener(
-							'click',
-							function() {
-								window.location.href = "/product/productSort?sortBy=location&limit=${limit}&offset=${offset}+10";
-							});
-		}
+		document
+				.querySelector('.previous')
+				.addEventListener(
+						'click',
+						function() {
+							if ( ${offset + 4} >= 0) {
+								window.location.href = "/product/productSort?sortBy=${sortBy}&limit=${limit}&offset=${offset-4}";
+							}
+						});
+
+		document
+				.querySelector('.next')
+				.addEventListener(
+						'click',
+						function() {
+							if (${offset + 4} < ${count}) {
+								console.log('hello');
+								console.log(count);
+								window.location.href = "/product/productSort?sortBy=${sortBy}&limit=${limit}&offset=${offset+4}";
+							}
+						});
 	</script>
 </body>
 </html>

@@ -34,6 +34,8 @@ public class ProductServiceImpl implements ProductService {
 
 		String queryString = "FROM Product";
 		TypedQuery<Product> query = session.createQuery(queryString, Product.class);
+		query.setMaxResults(4);
+		query.setFirstResult(0);
 		List<Product> products = query.getResultList();
 
 		return products;
@@ -48,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public List<Productsorted> getAllSortedProducts(String sortBy, int limit, int offset) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-
+		if(sortBy.isBlank())sortBy="p2.id";
 		String queryString = "SELECT p.product_code, p.product_description, p.product_name, \n"
 				+ " p2.price as product_price, p2.currency, s.inventory_available, s.location, \n"
 				+ " c.category_code, c.category_name FROM Product p \n"
@@ -60,8 +62,20 @@ public class ProductServiceImpl implements ProductService {
 		query.setResultTransformer(Transformers.aliasToBean(Productsorted.class));
 		query.setFirstResult(offset);
 		query.setMaxResults(limit);
-		List<Productsorted> products = query.list();
+		List<Productsorted> products = query.getResultList();
 		return products;
+	}
+
+	@Override
+	@Transactional
+	public int getCount() {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+
+		String queryString = "FROM Product";
+		TypedQuery<Product> query = session.createQuery(queryString, Product.class); 
+		List<Product> products = query.getResultList();
+
+		return products.size();
 	}
 
 }
