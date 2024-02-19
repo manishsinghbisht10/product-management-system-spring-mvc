@@ -11,8 +11,6 @@ import jakarta.persistence.*;
 @Data
 public class Product {
 
-
-
 	@Id
 	@Column(name = "product_code")
 	private String productCode;
@@ -23,7 +21,7 @@ public class Product {
 	@Column(name = "product_name")
 	private String productName;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "category", nullable = false)
 	private Category category;
 

@@ -63,10 +63,7 @@ h1 {
 		<a style="text-decoration: none" href="home"><strong>Refresh</strong></a>
 	</button>
 	<h1>Product List</h1>
-	<c:set var="count" value="${count}" />
-	<c:set var="limit" value="${limit}" />
-	<c:set var="offset" value="${offset}" />
-	<c:set var="sortBy" value="${sortBy}" />
+
 	<div>
 		<table class="table table-striped">
 			<thead>
@@ -120,18 +117,9 @@ h1 {
 	</div>
 
 	<script>
-		let offset = $
-		{
-			offset
-		};
-		let limit = $
-		{
-			limit
-		};
-		let count = $
-		{
-			count
-		};
+		let offset = ${	offset};
+		let limit = ${limit};
+		let count = ${count};
 		let sortBy = $
 		{
 			'sortBy'
@@ -140,90 +128,90 @@ h1 {
 		console.log('Limit:', limit);
 		console.log('Count:', count);
 		document
-				.getElementById('downArrow1')
-				.addEventListener(
-						'click',
-						function() {
-							window.location.href = "/product/productSort?sortBy=product_name&limit=${limit}&offset=${offset}";
-						});
+		.getElementById('downArrow1')
+		.addEventListener(
+				'click',
+				function() {
+					window.location.href = "/product/productSort?sortBy=product_name&limit=${limit}&offset=${offset}";
+				});
 
 		document
-				.getElementById('downArrow2')
-				.addEventListener(
-						'click',
-						function() {
-							window.location.href = "/product/productSort?sortBy=product_code&limit=${limit}&offset=${offset}";
-						});
+		.getElementById('downArrow2')
+		.addEventListener(
+				'click',
+				function() {
+					window.location.href = "/product/productSort?sortBy=product_code&limit=${limit}&offset=${offset}";
+				});
 
 		document
-				.getElementById('downArrow3')
-				.addEventListener(
-						'click',
-						function() {
-							window.location.href = "/product/productSort?sortBy=product_description&limit=${limit}&offset=${offset}";
-						});
+		.getElementById('downArrow3')
+		.addEventListener(
+				'click',
+				function() {
+					window.location.href = "/product/productSort?sortBy=product_description&limit=${limit}&offset=${offset}";
+				});
 
 		document
-				.getElementById('downArrow4')
-				.addEventListener(
-						'click',
-						function() {
-							window.location.href = "/product/productSort?sortBy=category_name&limit=${limit}&offset=${offset}";
-						});
+		.getElementById('downArrow4')
+		.addEventListener(
+				'click',
+				function() {
+					window.location.href = "/product/productSort?sortBy=category_name&limit=${limit}&offset=${offset}";
+				});
 
 		document
-				.getElementById('downArrow5')
-				.addEventListener(
-						'click',
-						function() {
-							window.location.href = "/product/productSort?sortBy=product_price&limit=${limit}&offset=${offset}";
-						});
+		.getElementById('downArrow5')
+		.addEventListener(
+				'click',
+				function() {
+					window.location.href = "/product/productSort?sortBy=product_price&limit=${limit}&offset=${offset}";
+				});
 
 		document
-				.getElementById('downArrow6')
-				.addEventListener(
-						'click',
-						function() {
-							window.location.href = "/product/productSort?sortBy=currency&limit=${limit}&offset=${offset}";
-						});
+		.getElementById('downArrow6')
+		.addEventListener(
+				'click',
+				function() {
+					window.location.href = "/product/productSort?sortBy=currency&limit=${limit}&offset=${offset}";
+				});
 
 		document
-				.getElementById('downArrow7')
-				.addEventListener(
-						'click',
-						function() {
-							window.location.href = "/product/productSort?sortBy=inventory_available&limit=${limit}&offset=${offset}";
-						});
+		.getElementById('downArrow7')
+		.addEventListener(
+				'click',
+				function() {
+					window.location.href = "/product/productSort?sortBy=inventory_available&limit=${limit}&offset=${offset}";
+				});
 
 		document
-				.getElementById('downArrow8')
-				.addEventListener(
-						'click',
-						function() {
-							window.location.href = "/product/productSort?sortBy=location&limit=${limit}&offset=${offset}";
-						});
+		.getElementById('downArrow8')
+		.addEventListener(
+				'click',
+				function() {
+					window.location.href = "/product/productSort?sortBy=location&limit=${limit}&offset=${offset}";
+				});
 
 		document
-				.querySelector('.previous')
-				.addEventListener(
-						'click',
-						function() {
-							if ( ${offset + 4} > 4) {
-								window.location.href = "/product/productSort?sortBy=${sortBy}&limit=${limit}&offset=${offset-4}";
-							}
-						});
+		.querySelector('.previous')
+		.addEventListener(
+				'click',
+				function() {
+					if ( ${offset + 4} > 4) {
+						window.location.href = "/product/productSort?sortBy=${sortBy}&limit=${limit}&offset=${offset-4}";
+					}
+				});
 
 		document
-				.querySelector('.next')
-				.addEventListener(
-						'click',
-						function() {
-							if (${offset + 4} < ${count}) {
-								console.log('hello');
-								console.log(count);
-								window.location.href = "/product/productSort?sortBy=${sortBy}&limit=${limit}&offset=${offset+4}";
-							}
-						});
+		.querySelector('.next')
+		.addEventListener(
+				'click',
+				function() {
+					if (${offset + 4} < ${count}) {
+						console.log('hello');
+						console.log(count);
+						window.location.href = "/product/productSort?sortBy=${sortBy}&limit=${limit}&offset=${offset+4}";
+					}
+				});
 	</script>
 </body>
 </html>

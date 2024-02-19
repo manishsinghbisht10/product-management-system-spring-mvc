@@ -13,7 +13,6 @@ public class Productsorted {
 	private String product_code;
 	private String product_description;
 	private String category_name;
-	private BigDecimal category_code;
 	private BigDecimal product_price;
 	private String currency;
 	private String location;
