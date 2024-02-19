@@ -17,6 +17,7 @@ import com.manish.Entity.Stock;
 import com.manish.model.ProductResponse;
 import com.manish.model.Productsorted;
 import com.manish.model.SaveProduct;
+import com.manish.service.CategoryService;
 import com.manish.service.ProductService;
 
 @Controller
@@ -24,6 +25,9 @@ public class ProductController {
 
 	@Autowired
 	ProductService productService;
+	
+	@Autowired
+	CategoryService categoryService;
 
 	@RequestMapping(path = "/home", method = RequestMethod.GET)
 	public String getProduct(Model theModel) {
@@ -78,19 +82,28 @@ public class ProductController {
 		stock.setLocation(saveProduct.getLocation());
 		stock.setInventoryAvailable(saveProduct.getInvaentoryAvailable());
 
-		category.setCategoryCode(saveProduct.getCategoryCode());
 		category.setCategoryName(saveProduct.getCategoryName());
 
 		product.setProductCode(saveProduct.getProductCode());
 		product.setProductDescription(saveProduct.getProductDescription());
 		product.setProductName(saveProduct.getProductName());
-
+		
 		product.setCategory(category);
 		product.setPrice(price);
 		product.setStock(stock);
 
 		price.setProduct(product);
 		stock.setProduct(product);
+		
+		List<Category>categories= categoryService.saveCategory(category.getCategoryName());
+		if(categories!=null) {
+			product.setCategory(categories.get(0));
+		}
+		else {
+			ArrayList<Product> products=new ArrayList<Product>();
+			products.add(product);
+			category.setProduct(products);
+		}
 		productService.Save(product);
 		return "redirect:/home";
 	}

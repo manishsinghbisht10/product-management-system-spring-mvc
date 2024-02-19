@@ -69,11 +69,6 @@ h1 {
 					</div>
 
 					<div class="mb-3">
-						<label>Enter Category Code</label> <input type="text"
-							name="categoryCode" class="form-control">
-					</div>
-
-					<div class="mb-3">
 						<label>Enter Product price</label> <input type="text"
 							name="productPrice" class="form-control">
 					</div>

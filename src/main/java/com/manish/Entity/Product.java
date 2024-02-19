@@ -24,7 +24,7 @@ public class Product {
 	private String productName;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "category")
+	@JoinColumn(name = "category", nullable = false)
 	private Category category;
 
 	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL)

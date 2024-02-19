@@ -14,7 +14,6 @@ public class SaveProduct {
 	private String productCode;
 	private String productDescription;
 	private String categoryName;
-	private BigDecimal categoryCode;
 	private BigDecimal productPrice;
 	private String currency;
 	private String location;
