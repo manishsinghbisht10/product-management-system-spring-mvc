@@ -48,6 +48,10 @@ h1 {
 .fas:hover {
 	cursor: pointer;
 }
+
+.delete {
+	margin: 0;
+}
 </style>
 </head>
 <body>
@@ -95,6 +99,9 @@ h1 {
 						<td>${product.currency}</td>
 						<td>${product.inventory }</td>
 						<td>${product.location }</td>
+						<td><button type="button" class="delete btn btn-light">
+								<a style="text-decoration: none" href="add">Delete</a>
+							</button></td>
 					</tr>
 				</c:forEach>
 			</tbody>

@@ -25,7 +25,7 @@ public class ProductController {
 
 	@Autowired
 	ProductService productService;
-	
+
 	@Autowired
 	CategoryService categoryService;
 
@@ -87,20 +87,19 @@ public class ProductController {
 		product.setProductCode(saveProduct.getProductCode());
 		product.setProductDescription(saveProduct.getProductDescription());
 		product.setProductName(saveProduct.getProductName());
-		
+
 		product.setCategory(category);
 		product.setPrice(price);
 		product.setStock(stock);
 
 		price.setProduct(product);
 		stock.setProduct(product);
-		
-		List<Category>categories= categoryService.saveCategory(category.getCategoryName());
-		if(categories!=null) {
+
+		List<Category> categories = categoryService.saveCategory(category.getCategoryName());
+		if (categories != null) {
 			product.setCategory(categories.get(0));
-		}
-		else {
-			ArrayList<Product> products=new ArrayList<Product>();
+		} else {
+			ArrayList<Product> products = new ArrayList<Product>();
 			products.add(product);
 			category.setProduct(products);
 		}
@@ -151,6 +150,11 @@ public class ProductController {
 		theModel.addAttribute("sortBy", sortBy);
 		theModel.addAttribute("productList", productLists);
 		return "product";
+	}
+
+	@RequestMapping(path = "/delete", method = RequestMethod.DELETE)
+	public void deleteProduct(String productCode) {
+		
 	}
 
 }
