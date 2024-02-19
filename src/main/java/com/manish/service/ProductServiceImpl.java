@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
 	public List<Product> getAllProducts() {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 
-		String queryString = "FROM Product";
+		String queryString = "FROM Product p ORDER BY p.productId DESC";
 		TypedQuery<Product> query = session.createQuery(queryString, Product.class);
 		query.setMaxResults(4);
 		query.setFirstResult(0);
@@ -51,12 +51,12 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public List<Productsorted> getAllSortedProducts(String sortBy, int limit, int offset) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		if(sortBy.isBlank())sortBy="p2.id";
+		if(sortBy.isBlank())sortBy="p.product_id";
 		String queryString = "SELECT p.product_code, p.product_description, p.product_name, \n"
 				+ " p2.price as product_price, p2.currency, s.inventory_available, s.location, \n"
 				+ " c.category_name FROM Product p \n"
-				+ " INNER JOIN Price p2 ON p.product_code = p2.product_code  \n"
-				+ " INNER JOIN Stock s ON s.product_code = p.product_code  \n"
+				+ " INNER JOIN Price p2 ON p.product_id = p2.product_id  \n"
+				+ " INNER JOIN Stock s ON s.product_id = p.product_id  \n"
 				+ " INNER JOIN Category c ON c.category_code = p.category ORDER BY " + sortBy;
 
 		Query query = session.createNativeQuery(queryString);

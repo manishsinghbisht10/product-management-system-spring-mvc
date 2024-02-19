@@ -24,6 +24,6 @@ public class Stock {
 	private BigDecimal inventoryAvailable;
 
 	@OneToOne
-	@JoinColumn(name = "product_code")
+	@JoinColumn(name = "product_id")
 	private Product product;
 }

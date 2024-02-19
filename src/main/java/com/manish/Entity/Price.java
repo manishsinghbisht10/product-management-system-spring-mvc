@@ -24,7 +24,7 @@ public class Price {
     private String currency;
 
     @OneToOne
-    @JoinColumn(name = "product_code")
+    @JoinColumn(name = "product_id")
     private Product product;
 
 }
