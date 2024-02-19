@@ -56,10 +56,11 @@ h1 {
 </head>
 <body>
 	<button type="button" class="add btn btn-light">
-		<a style="text-decoration: none" href="add">New Product</a>
+		<a style="text-decoration: none" href="add"><strong>New
+				Product</strong></a>
 	</button>
 	<button type="button" class="add btn btn-light">
-		<a style="text-decoration: none" href="home">Refresh</a>
+		<a style="text-decoration: none" href="home"><strong>Refresh</strong></a>
 	</button>
 	<h1>Product List</h1>
 	<c:set var="count" value="${count}" />
@@ -100,7 +101,9 @@ h1 {
 						<td>${product.inventory }</td>
 						<td>${product.location }</td>
 						<td><button type="button" class="delete btn btn-light">
-								<a style="text-decoration: none" href="add">Delete</a>
+								<a style="text-decoration: none"
+									href="/product/delete?productCode=${product.productCode}"><strong>Delete</strong>
+								</a>
 							</button></td>
 					</tr>
 				</c:forEach>
@@ -109,8 +112,11 @@ h1 {
 	</div>
 	<div class=pagination>
 		<button type="button" class=" previous btn btn-light previous">
-			Previous</button>
-		<button type="button" class=" next btn btn-light next">Next</button>
+			<strong>Previous</strong>
+		</button>
+		<button type="button" class=" next btn btn-light next">
+			<strong>Next</strong>
+		</button>
 	</div>
 
 	<script>

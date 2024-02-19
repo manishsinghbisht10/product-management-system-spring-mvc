@@ -152,9 +152,10 @@ public class ProductController {
 		return "product";
 	}
 
-	@RequestMapping(path = "/delete", method = RequestMethod.DELETE)
-	public void deleteProduct(String productCode) {
-		
+	@RequestMapping(path = "/delete", method = RequestMethod.GET)
+	public String deleteProduct(@RequestParam("productCode") String productCode) {
+		productService.delete(productCode);
+		return "redirect:/home";
 	}
 
 }

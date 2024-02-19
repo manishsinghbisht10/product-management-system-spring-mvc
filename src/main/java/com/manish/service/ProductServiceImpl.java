@@ -79,4 +79,12 @@ public class ProductServiceImpl implements ProductService {
 		return products.size();
 	}
 
+	@Override
+	@Transactional
+	public void delete(String productCode) {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		Product product= session.find(Product.class,productCode);
+		session.delete(product);
+	}
+
 }

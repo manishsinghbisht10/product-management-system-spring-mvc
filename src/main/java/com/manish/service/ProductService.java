@@ -16,4 +16,6 @@ public interface ProductService {
 	Product getProduct(String productCode);
 	
 	int getCount();
+	
+	void delete(String productCode);
 }

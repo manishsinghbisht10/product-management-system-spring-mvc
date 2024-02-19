@@ -42,7 +42,7 @@ h1 {
 </head>
 <body>
 	<button type="button" class="home add btn btn-light">
-		<a style="text-decoration: none" href="home">Home</a>
+		<a style="text-decoration: none" href="home"><strong>Home</strong></a>
 	</button>
 	<h1>Add Product</h1>
 	<div class="card-div">
@@ -88,7 +88,9 @@ h1 {
 							name="invaentoryAvailable" class="form-control">
 					</div>
 
-					<button class="btn btn-primary">Submit</button>
+					<button class="btn btn-primary">
+						<strong>Submit</strong>
+					</button>
 				</form>
 			</div>
 		</div>
