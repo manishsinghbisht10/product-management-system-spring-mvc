@@ -51,8 +51,8 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public List<Productsorted> getAllSortedProducts(String sortBy, int limit, int offset) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		if(sortBy.isBlank())sortBy="p.product_id";
-		String queryString = "SELECT p.product_code, p.product_description, p.product_name, \n"
+		if(sortBy.isBlank())sortBy="p.product_id DESC";
+		String queryString = "SELECT p.product_id,p.product_code, p.product_description, p.product_name, \n"
 				+ " p2.price as product_price, p2.currency, s.inventory_available, s.location, \n"
 				+ " c.category_name FROM Product p \n"
 				+ " INNER JOIN Price p2 ON p.product_id = p2.product_id  \n"
@@ -81,9 +81,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	@Transactional
-	public void delete(String productCode) {
+	public void delete(Long productId) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		Product product= session.find(Product.class,productCode);
+		Product product= session.find(Product.class,productId);
 		session.delete(product);
 	}
 

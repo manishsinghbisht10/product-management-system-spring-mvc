@@ -21,7 +21,6 @@ public class Category {
 	@Column(name = "category_name")
 	private String categoryName;
 
-	@OneToMany(mappedBy = "category", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
-			CascadeType.DETACH })
+	@OneToMany(mappedBy = "category")
 	private List<Product> product;
 }

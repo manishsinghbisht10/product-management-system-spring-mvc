@@ -17,5 +17,5 @@ public interface ProductService {
 	
 	int getCount();
 	
-	void delete(String productCode);
+	void delete(Long productId);
 }

@@ -99,7 +99,7 @@ h1 {
 						<td>${product.location }</td>
 						<td><button type="button" class="delete btn btn-light">
 								<a style="text-decoration: none"
-									href="/product/delete?productCode=${product.productCode}"><strong>Delete</strong>
+									href="/product/delete?productId=${product.productId}"><strong>Delete</strong>
 								</a>
 							</button></td>
 					</tr>

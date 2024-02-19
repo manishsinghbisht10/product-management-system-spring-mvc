@@ -41,6 +41,7 @@ public class ProductController {
 			productResponse.setProductName(p.getProductName());
 			productResponse.setProductDescription(p.getProductDescription());
 			productResponse.setProductCode(p.getProductCode());
+			productResponse.setProductId((Long) p.getProductId());
 
 			Category categoryDB = p.getCategory();
 			if (!Objects.isNull(categoryDB))
@@ -96,13 +97,8 @@ public class ProductController {
 		stock.setProduct(product);
 
 		List<Category> categories = categoryService.saveCategory(category.getCategoryName());
-		if (categories != null) {
-			product.setCategory(categories.get(0));
-		} else {
-			ArrayList<Product> products = new ArrayList<Product>();
-			products.add(product);
-			category.setProduct(products);
-		}
+		product.setCategory(categories.get(0));
+
 		productService.Save(product);
 		return "redirect:/home";
 	}
@@ -133,6 +129,7 @@ public class ProductController {
 			productResponse.setProductName(p.getProduct_name());
 			productResponse.setProductDescription(p.getProduct_description());
 			productResponse.setProductCode(p.getProduct_code());
+			productResponse.setProductId((p.getProduct_id().longValue()));
 
 			productResponse.setCategoryName(p.getCategory_name());
 
@@ -153,8 +150,8 @@ public class ProductController {
 	}
 
 	@RequestMapping(path = "/delete", method = RequestMethod.GET)
-	public String deleteProduct(@RequestParam("productCode") String productCode) {
-		productService.delete(productCode);
+	public String deleteProduct(@RequestParam("productId") Long productId) {
+		productService.delete(productId);
 		return "redirect:/home";
 	}
 

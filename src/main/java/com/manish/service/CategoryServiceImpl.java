@@ -3,14 +3,11 @@ package com.manish.service;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.manish.Entity.Category;
-import com.manish.Entity.Product;
-
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
@@ -31,10 +28,14 @@ public class CategoryServiceImpl implements CategoryService {
 		List<Category> categories = query.getResultList();
 
 		if (categories.isEmpty()) {
-			return null;
-		} else {
-			return categories;
+			Category category = new Category();
+			category.setCategoryName(name);
+			session.save(category);
+			TypedQuery<Category> query2 = session.createQuery(queryString, Category.class);
+			query2.setParameter("name", name);
+			categories = query.getResultList();
 		}
+		return categories;
 	}
 
 }

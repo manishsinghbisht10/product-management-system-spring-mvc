@@ -18,5 +18,5 @@ public class ProductResponse {
 	private String currency;
 	private String location;
 	private BigDecimal inventory;
-
+	private Long productId;
 }
