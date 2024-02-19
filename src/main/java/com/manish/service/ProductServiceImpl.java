@@ -1,17 +1,14 @@
 package com.manish.service;
 
 import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
-
 import com.manish.Entity.Product;
 import com.manish.model.Productsorted;
-
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 

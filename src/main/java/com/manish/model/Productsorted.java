@@ -2,7 +2,6 @@ package com.manish.model;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
