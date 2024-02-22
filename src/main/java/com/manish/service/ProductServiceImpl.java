@@ -1,125 +1,147 @@
 package com.manish.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.hibernate.Session;
-import org.hibernate.query.Query;
-import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate5.HibernateTemplate;
-import org.springframework.stereotype.Repository;
-
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
 import com.manish.Entity.Category;
+import com.manish.Entity.Price;
 import com.manish.Entity.Product;
+import com.manish.Entity.Stock;
 import com.manish.customExceptions.DuplicateKeyException;
-import com.manish.model.CategoryNameAndProductNameDTO;
+import com.manish.model.ProductResponse;
 import com.manish.model.Productsorted;
-
-import jakarta.persistence.TypedQuery;
+import com.manish.model.SaveProduct;
+import com.manish.repository.CategoryRepository;
+import com.manish.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 
-@SuppressWarnings("deprecation")
-@Repository
+@Service
 public class ProductServiceImpl implements ProductService {
 
 	@Autowired
-	private HibernateTemplate hibernateTemplate;
+	private ProductRepository productRepository;
+
+	@Autowired
+	private CategoryRepository categoryRepository;
 
 	@Override
 	@Transactional
-	public void Save(Product product) throws DuplicateKeyException {
-		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+	public List<ProductResponse> getAllProducts() {
+		List<ProductResponse> productLists = new ArrayList<>();
+		List<Product> productDB = productRepository.getAllProducts();
+		for (Product p : productDB) {
+			ProductResponse productResponse = new ProductResponse();
 
-		String productName = product.getProductName();
-		List<String> categories = product.getCategory().stream().map(x -> x.getCategoryName())
-				.collect(Collectors.toList());
+			productResponse.setProductName(p.getProductName());
+			productResponse.setProductDescription(p.getProductDescription());
+			productResponse.setProductCode(p.getProductCode());
+			productResponse.setProductId((Long) p.getProductId());
 
-		String queryString = "SELECT p.product_name,c.category_name FROM Product p\n"
-				+ "	   LEFT JOIN product_category pc ON p.product_id = pc.product_id LEFT JOIN \n"
-				+ "    Category c ON pc.category_code = c.category_code LEFT JOIN \n"
-				+ "    Price p2 ON p.product_id = p2.product_id LEFT JOIN \n"
-				+ "    Stock s ON p.product_id = s.product_id WHERE p.product_name = :productName AND c.category_name IN (:categories)";
+			List<Category> categoryDB = p.getCategory();
+			String string = "";
+			if (!Objects.isNull(categoryDB))
+				for (int i = 0; i < categoryDB.size(); i++)
+					string = string + categoryDB.get(i).getCategoryName() + ",";
+			productResponse.setCategoryName(string);
 
-		Query query = session.createNativeQuery(queryString);
-		query.setResultTransformer(Transformers.aliasToBean(CategoryNameAndProductNameDTO.class));
-		// Set parameters
-		query.setParameter("productName", productName);
-		query.setParameterList("categories", categories); 
+			Price priceDB = p.getPrice();
+			if (!Objects.isNull(priceDB)) {
+				productResponse.setCurrency(priceDB.getCurrency());
+				productResponse.setPrice(priceDB.getPrice());
+			}
 
-		List<CategoryNameAndProductNameDTO> categoryNameAndProductNameDTO = query.getResultList();
-
-		if (!categoryNameAndProductNameDTO.isEmpty()) {
-			System.out.println(categoryNameAndProductNameDTO);
-			throw new DuplicateKeyException("Duplicate Entry for product name and category");
+			Stock stockDB = p.getStock();
+			if (!Objects.isNull(stockDB)) {
+				productResponse.setLocation(stockDB.getLocation());
+				productResponse.setInventory(stockDB.getInventoryAvailable());
+			}
+			productLists.add(productResponse);
 		}
-		hibernateTemplate.save(product);
-
+		return productLists;
 	}
 
 	@Override
 	@Transactional
-	public List<Product> getAllProducts() {
-		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+	public List<ProductResponse> getAllSortedProducts(String sortBy, int limit, int offset) {
+		List<Productsorted> productDB = productRepository.getAllSortedProducts(sortBy, limit, offset);
 
-		String queryString = "SELECT DISTINCT p FROM Product p JOIN FETCH p.category ORDER BY p.productId DESC";
-		TypedQuery<Product> query = session.createQuery(queryString, Product.class);
-		query.setMaxResults(4);
-		query.setFirstResult(0);
-		List<Product> products = query.getResultList();
+		List<ProductResponse> productLists = new ArrayList<>();
 
-		return products;
+		for (Productsorted p : productDB) {
+			ProductResponse productResponse = new ProductResponse();
+
+			productResponse.setProductName(p.getProduct_name());
+			productResponse.setProductDescription(p.getProduct_description());
+			productResponse.setProductCode(p.getProduct_code());
+			productResponse.setProductId((p.getProduct_id().longValue()));
+
+			productResponse.setCategoryName(p.getCategory_name());
+
+			productResponse.setCurrency(p.getCurrency());
+			productResponse.setPrice(p.getProduct_price());
+
+			productResponse.setLocation(p.getLocation());
+			productResponse.setInventory(p.getInventory_available());
+			productLists.add(productResponse);
+
+		}
+		return productLists;
 	}
 
 	@Override
+	@Transactional
 	public Product getProduct(String productCode) {
-		return hibernateTemplate.get(Product.class, productCode);
-	}
-
-	@Override
-	@Transactional
-	public List<Productsorted> getAllSortedProducts(String sortBy, int limit, int offset) {
-		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		if (sortBy.isBlank())
-			sortBy = "p.product_id DESC";
-		String queryString = "SELECT  p.product_id,\n"
-				+ "    GROUP_CONCAT(c.category_name) AS category_name, p.product_code,\n"
-				+ "    p.product_description,   p.product_name,  p2.price AS product_price,\n"
-				+ "    p2.currency, s.inventory_available, s.location FROM \n"
-				+ "    Product p LEFT JOIN product_category pc ON p.product_id = pc.product_id\n"
-				+ "	   LEFT JOIN Category c ON pc.category_code = c.category_code LEFT JOIN \n"
-				+ "    Price p2 ON p.product_id = p2.product_id LEFT JOIN \n"
-				+ "    Stock s ON p.product_id = s.product_id GROUP BY p.product_id,\n"
-				+ "    p.product_code, p.product_description, p.product_name, p2.price,\n"
-				+ "    p2.currency,s.inventory_available, s.location ORDER BY " + sortBy;
-
-		Query query = session.createNativeQuery(queryString);
-		query.setResultTransformer(Transformers.aliasToBean(Productsorted.class));
-		query.setFirstResult(offset);
-		query.setMaxResults(limit);
-		List<Productsorted> products = query.getResultList();
-		return products;
+		return productRepository.getProduct(productCode);
 	}
 
 	@Override
 	@Transactional
 	public int getCount() {
-		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-
-		String queryString = "FROM Product";
-		TypedQuery<Product> query = session.createQuery(queryString, Product.class);
-		List<Product> products = query.getResultList();
-
-		return products.size();
+		return productRepository.getCount();
 	}
 
 	@Override
 	@Transactional
 	public void delete(Long productId) {
-		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		Product product = session.find(Product.class, productId);
-		session.delete(product);
+		productRepository.delete(productId);
+
 	}
 
+	@Override
+	@Transactional
+	public void Save(SaveProduct saveProduct) throws DuplicateKeyException {
+		Product product = new Product();
+		Price price = new Price();
+		Stock stock = new Stock();
+		price.setPrice(saveProduct.getProductPrice());
+		price.setCurrency(saveProduct.getCurrency());
+
+		stock.setLocation(saveProduct.getLocation());
+		stock.setInventoryAvailable(saveProduct.getInvaentoryAvailable());
+
+		product.setProductCode(saveProduct.getProductCode());
+		product.setProductDescription(saveProduct.getProductDescription());
+		product.setProductName(saveProduct.getProductName());
+
+		product.setPrice(price);
+		product.setStock(stock);
+
+		price.setProduct(product);
+		stock.setProduct(product);
+
+		String categories[] = saveProduct.getCategoryName().split(",");
+		List<Category> categoriesList = new ArrayList<>();
+		for (int i = 0; i < categories.length; i++) {
+
+			Category categoryDb = categoryRepository.saveCategory(categories[i]);
+			categoriesList.add(categoryDb);
+
+		}
+		product.setCategory(categoriesList);
+		productRepository.Save(product);
+
+	}
 }

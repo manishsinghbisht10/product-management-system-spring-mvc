@@ -1,8 +1,6 @@
 package com.manish.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -11,12 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.manish.Entity.Category;
-import com.manish.Entity.Price;
-import com.manish.Entity.Product;
-import com.manish.Entity.Stock;
 import com.manish.model.ProductResponse;
-import com.manish.model.Productsorted;
 import com.manish.model.SaveProduct;
 import com.manish.service.CategoryService;
 import com.manish.service.ProductService;
@@ -32,79 +25,22 @@ public class ProductController {
 
 	@RequestMapping(path = "/home", method = RequestMethod.GET)
 	public String getProduct(Model theModel) {
-		List<Product> productDB = productService.getAllProducts();
 
-		List<ProductResponse> productLists = new ArrayList<>();
-		for (Product p : productDB) {
-			ProductResponse productResponse = new ProductResponse();
-
-			productResponse.setProductName(p.getProductName());
-			productResponse.setProductDescription(p.getProductDescription());
-			productResponse.setProductCode(p.getProductCode());
-			productResponse.setProductId((Long) p.getProductId());
-
-			List<Category> categoryDB = p.getCategory();
-			String string = "";
-			if (!Objects.isNull(categoryDB))
-				for (int i = 0; i < categoryDB.size(); i++)
-					string = string + categoryDB.get(i).getCategoryName() + ",";
-			productResponse.setCategoryName(string);
-
-			Price priceDB = p.getPrice();
-			if (!Objects.isNull(priceDB)) {
-				productResponse.setCurrency(priceDB.getCurrency());
-				productResponse.setPrice(priceDB.getPrice());
-			}
-
-			Stock stockDB = p.getStock();
-			if (!Objects.isNull(stockDB)) {
-				productResponse.setLocation(stockDB.getLocation());
-				productResponse.setInventory(stockDB.getInventoryAvailable());
-			}
-			productLists.add(productResponse);
-
-		}
+		List<ProductResponse> productDB = productService.getAllProducts();
 
 		theModel.addAttribute("limit", 4);
 		theModel.addAttribute("offset", 0);
 		theModel.addAttribute("sortBy", "");
 		theModel.addAttribute("count", productService.getCount());
-		theModel.addAttribute("productList", productLists);
+		theModel.addAttribute("productList", productDB);
 		return "product";
 	}
 
 	@RequestMapping(path = "/save", method = RequestMethod.POST)
 	public String saveProduct(@ModelAttribute SaveProduct saveProduct, Model model) { // save Product to DB
-		Product product = new Product();
-		Price price = new Price();
-		Stock stock = new Stock();
-		price.setPrice(saveProduct.getProductPrice());
-		price.setCurrency(saveProduct.getCurrency());
 
-		stock.setLocation(saveProduct.getLocation());
-		stock.setInventoryAvailable(saveProduct.getInvaentoryAvailable());
-
-		product.setProductCode(saveProduct.getProductCode());
-		product.setProductDescription(saveProduct.getProductDescription());
-		product.setProductName(saveProduct.getProductName());
-
-		product.setPrice(price);
-		product.setStock(stock);
-
-		price.setProduct(product);
-		stock.setProduct(product);
-
-		String categories[] = saveProduct.getCategoryName().split(",");
-		List<Category> categoriesList = new ArrayList<>();
-		for (int i = 0; i < categories.length; i++) {
-
-			Category categoryDb = categoryService.saveCategory(categories[i]);
-			categoriesList.add(categoryDb);
-
-		}
-		product.setCategory(categoriesList);
 		try {
-			productService.Save(product);
+			productService.Save(saveProduct);
 			model.addAttribute("successMessage", "Product saved successfully!");
 		} catch (com.manish.customExceptions.DuplicateKeyException ex) {
 			ex.printStackTrace();
@@ -135,28 +71,9 @@ public class ProductController {
 			@RequestParam(value = "sortBy", defaultValue = "", required = false) String sortBy,
 			@RequestParam(value = "limit", defaultValue = "4", required = false) int limit,
 			@RequestParam(value = "offset", defaultValue = "0", required = false) int offset) {
-		List<Productsorted> productDB = productService.getAllSortedProducts(sortBy, limit, offset);
 
-		List<ProductResponse> productLists = new ArrayList<>();
+		List<ProductResponse> productLists = productService.getAllSortedProducts(sortBy, limit, offset);
 
-		for (Productsorted p : productDB) {
-			ProductResponse productResponse = new ProductResponse();
-
-			productResponse.setProductName(p.getProduct_name());
-			productResponse.setProductDescription(p.getProduct_description());
-			productResponse.setProductCode(p.getProduct_code());
-			productResponse.setProductId((p.getProduct_id().longValue()));
-
-			productResponse.setCategoryName(p.getCategory_name());
-
-			productResponse.setCurrency(p.getCurrency());
-			productResponse.setPrice(p.getProduct_price());
-
-			productResponse.setLocation(p.getLocation());
-			productResponse.setInventory(p.getInventory_available());
-			productLists.add(productResponse);
-
-		}
 		theModel.addAttribute("count", productService.getCount());
 		theModel.addAttribute("limit", limit);
 		theModel.addAttribute("offset", offset);
@@ -167,7 +84,9 @@ public class ProductController {
 
 	@RequestMapping(path = "/delete", method = RequestMethod.GET)
 	public String deleteProduct(@RequestParam("productId") Long productId) {
+
 		productService.delete(productId);
+
 		return "redirect:/home";
 	}
 
