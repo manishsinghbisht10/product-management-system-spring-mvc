@@ -1,6 +1,8 @@
 package com.manish.service;
 
 import java.util.List;
+import java.util.Objects;
+
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
@@ -9,6 +11,8 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 import com.manish.Entity.Product;
 import com.manish.model.Productsorted;
+
+import CustomExceptions.DuplicateKeyException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
@@ -21,7 +25,15 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	@Transactional
-	public void Save(Product product) {
+	public void Save(Product product) throws DuplicateKeyException {
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+		String productCode = product.getProductCode();
+		String queryString = "SELECT p FROM Product p WHERE p.productCode = :productCode";
+		Product productDb = session.createQuery(queryString, Product.class).setParameter("productCode", productCode)
+				.uniqueResult();
+		if (Objects.nonNull(productDb)) {
+			throw new DuplicateKeyException("product code already exist in Database");
+		}
 		hibernateTemplate.save(product);
 	}
 
@@ -48,11 +60,11 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public List<Productsorted> getAllSortedProducts(String sortBy, int limit, int offset) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		if(sortBy.isBlank())sortBy="p.product_id DESC";
+		if (sortBy.isBlank())
+			sortBy = "p.product_id DESC";
 		String queryString = "SELECT p.product_id,p.product_code, p.product_description, p.product_name, \n"
 				+ " p2.price as product_price, p2.currency, s.inventory_available, s.location, \n"
-				+ " c.category_name FROM Product p \n"
-				+ " INNER JOIN Price p2 ON p.product_id = p2.product_id  \n"
+				+ " c.category_name FROM Product p \n" + " INNER JOIN Price p2 ON p.product_id = p2.product_id  \n"
 				+ " INNER JOIN Stock s ON s.product_id = p.product_id  \n"
 				+ " INNER JOIN Category c ON c.category_code = p.category ORDER BY " + sortBy;
 
@@ -70,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 
 		String queryString = "FROM Product";
-		TypedQuery<Product> query = session.createQuery(queryString, Product.class); 
+		TypedQuery<Product> query = session.createQuery(queryString, Product.class);
 		List<Product> products = query.getResultList();
 
 		return products.size();
@@ -80,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public void delete(Long productId) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		Product product= session.find(Product.class,productId);
+		Product product = session.find(Product.class, productId);
 		session.delete(product);
 	}
 

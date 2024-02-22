@@ -48,44 +48,61 @@ h1 {
 	<div class="card-div">
 		<div class="card" style="width: 25rem;">
 			<div class="card-body">
-				<form action="save" method="post">
+
+
+				<%-- Check for success message --%>
+				<c:if test="${not empty successMessage}">
+					<div class="alert alert-success">${successMessage}</div>
+				</c:if>
+
+				<%-- Check for error message --%>
+				<c:if test="${not empty errorMessage}">
+					<div class="alert alert-danger">${errorMessage}</div>
+				</c:if>
+
+
+				<form action="save" method="post"">
 					<div class="mb-3">
 						<label>Enter Product Code</label> <input type="text"
-							name="productCode" class="form-control">
+							name="productCode" id="productCode" class="form-control" required>
 					</div>
 					<div class="mb-3">
 						<label>Enter Product Description</label> <input type="text"
-							name="productDescription" class="form-control">
+							name="productDescription" id="productDescription"
+							class="form-control">
 					</div>
 
 					<div class="mb-3">
 						<label>Enter Product Name</label> <input type="text"
-							name="productName" class="form-control">
+							name="productName" id="productName" class="form-control" required>
 					</div>
 
 					<div class="mb-3">
 						<label>Enter Category Name</label> <input type="text"
-							name="categoryName" class="form-control">
+							name="categoryName" id="categoryName" class="form-control"
+							required>
 					</div>
 
 					<div class="mb-3">
-						<label>Enter Product price</label> <input type="text"
-							name="productPrice" class="form-control">
+						<label>Enter Product price</label> <input type="number"
+							name="productPrice" id="productPrice" class="form-control"
+							required>
 					</div>
 
 					<div class="mb-3">
 						<label>Enter Currency</label> <input type="text" name="currency"
-							class="form-control">
+							id="currency" class="form-control">
 					</div>
 
 					<div class="mb-3">
 						<label>Enter Location</label> <input type="text" name="location"
-							class="form-control">
+							id="location" class="form-control">
 					</div>
 
 					<div class="mb-3">
-						<label>Enter Inventory Available</label> <input type="text"
-							name="invaentoryAvailable" class="form-control">
+						<label>Enter Inventory Available</label> <input type="number"
+							name="invaentoryAvailable" id="invaentoryAvailable"
+							class="form-control">
 					</div>
 
 					<button class="btn btn-primary">
@@ -95,5 +112,17 @@ h1 {
 			</div>
 		</div>
 	</div>
+
+	<script>
+		function validateForm() {
+			let fieldValue = document.getElementById('fieldId').value.trim();
+			if (fieldValue === '') {
+				alert('Field cannot be empty!');
+				return false;
+			}
+			// You can add more validation rules here if needed
+			return true;
+		}
+	</script>
 </body>
 </html>

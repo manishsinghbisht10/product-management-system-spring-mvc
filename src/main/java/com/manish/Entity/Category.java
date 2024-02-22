@@ -18,7 +18,7 @@ public class Category {
 	@Column(name = "category_code")
 	private Long categoryCode;
 
-	@Column(name = "category_name")
+	@Column(name = "category_name",unique = true)
 	private String categoryName;
 
 	@OneToMany(mappedBy = "category")

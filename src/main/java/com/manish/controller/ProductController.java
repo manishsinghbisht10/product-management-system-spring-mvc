@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,6 +20,8 @@ import com.manish.model.Productsorted;
 import com.manish.model.SaveProduct;
 import com.manish.service.CategoryService;
 import com.manish.service.ProductService;
+
+import CustomExceptions.DuplicateKeyException;
 
 @Controller
 public class ProductController {
@@ -71,7 +74,7 @@ public class ProductController {
 	}
 
 	@RequestMapping(path = "/save", method = RequestMethod.POST)
-	public String saveProduct(@ModelAttribute SaveProduct saveProduct) { // save Product to DB
+	public String saveProduct(@ModelAttribute SaveProduct saveProduct, Model model) { // save Product to DB
 		Product product = new Product();
 		Price price = new Price();
 		Stock stock = new Stock();
@@ -99,8 +102,22 @@ public class ProductController {
 		List<Category> categories = categoryService.saveCategory(category.getCategoryName());
 		product.setCategory(categories.get(0));
 
-		productService.Save(product);
-		return "redirect:/home";
+		try {
+			productService.Save(product);
+			model.addAttribute("successMessage", "Product saved successfully!");
+		} catch (DataIntegrityViolationException ex) {
+			ex.printStackTrace();
+			model.addAttribute("errorMessage", "Record already Exists in DB");
+		} catch (CustomExceptions.DuplicateKeyException e) {
+			System.out.println("hello");
+			System.out.println("hello");
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", "Some exception has occured please try again");
+		}
+		return "addProduct";
 	}
 
 	@RequestMapping(path = "/add", method = RequestMethod.GET)

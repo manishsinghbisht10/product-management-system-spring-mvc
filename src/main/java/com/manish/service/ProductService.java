@@ -4,9 +4,11 @@ import java.util.List;
 import com.manish.Entity.Product;
 import com.manish.model.Productsorted;
 
+import CustomExceptions.DuplicateKeyException;
+
 public interface ProductService {
 
-	void Save(Product product);
+	void Save(Product product) throws DuplicateKeyException;
 
 	List<Product> getAllProducts();
 

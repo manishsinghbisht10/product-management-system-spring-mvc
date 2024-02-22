@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "product_code", "category" }),
+		@UniqueConstraint(columnNames = "product_code") })
 public class Product {
 
 	@Id
