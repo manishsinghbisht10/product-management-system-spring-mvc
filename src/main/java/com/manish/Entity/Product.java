@@ -29,30 +29,19 @@ public class Product {
 	@Column(name = "product_name")
 	private String productName;
 
-//	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH })
-//	@JoinColumn(name = "ç", nullable = false)
-//	private Category category;
-
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "product_category", 
-	           joinColumns = @JoinColumn(name = "product_id"), 
-	           inverseJoinColumns = @JoinColumn(name = "category_code"))
+	@JoinTable(name = "product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_code"))
 	private List<Category> category;
-
 
 	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
 	private Price price;
 
 	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
 	private Stock stock;
-	
-    @Override
-    public String toString() {
-        return "Product{" +
-                "productId=" + productId +
-                ", productCode='" + productCode + '\'' +
-                ", productDescription='" + productDescription + '\'' +
-                ", productName='" + productName + '\'' +
-                '}';
-    }
+
+	@Override
+	public String toString() {
+		return "Product{" + "productId=" + productId + ", productCode='" + productCode + '\'' + ", productDescription='"
+				+ productDescription + '\'' + ", productName='" + productName + '\'' + '}';
+	}
 }

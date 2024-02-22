@@ -2,6 +2,7 @@ package com.manish.service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -9,8 +10,11 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
+
+import com.manish.Entity.Category;
 import com.manish.Entity.Product;
 import com.manish.customExceptions.DuplicateKeyException;
+import com.manish.model.CategoryNameAndProductNameDTO;
 import com.manish.model.Productsorted;
 
 import jakarta.persistence.TypedQuery;
@@ -27,14 +31,31 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public void Save(Product product) throws DuplicateKeyException {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-		String productCode = product.getProductCode();
-		String queryString = "SELECT p FROM Product p WHERE p.productCode = :productCode";
-		Product productDb = session.createQuery(queryString, Product.class).setParameter("productCode", productCode)
-				.uniqueResult();
-		if (Objects.nonNull(productDb)) {
-			throw new DuplicateKeyException("product code already exist in Database");
+
+		String productName = product.getProductName();
+		List<String> categories = product.getCategory().stream().map(x -> x.getCategoryName())
+				.collect(Collectors.toList());
+
+		String queryString = "SELECT p.product_name,c.category_name FROM Product p\n"
+				+ "	   LEFT JOIN product_category pc ON p.product_id = pc.product_id LEFT JOIN \n"
+				+ "    Category c ON pc.category_code = c.category_code LEFT JOIN \n"
+				+ "    Price p2 ON p.product_id = p2.product_id LEFT JOIN \n"
+				+ "    Stock s ON p.product_id = s.product_id WHERE p.product_name = :productName AND c.category_name IN (:categories)";
+
+		Query query = session.createNativeQuery(queryString);
+		query.setResultTransformer(Transformers.aliasToBean(CategoryNameAndProductNameDTO.class));
+		// Set parameters
+		query.setParameter("productName", productName);
+		query.setParameterList("categories", categories); 
+
+		List<CategoryNameAndProductNameDTO> categoryNameAndProductNameDTO = query.getResultList();
+
+		if (!categoryNameAndProductNameDTO.isEmpty()) {
+			System.out.println(categoryNameAndProductNameDTO);
+			throw new DuplicateKeyException("Duplicate Entry for product name and category");
 		}
 		hibernateTemplate.save(product);
+
 	}
 
 	@Override
@@ -42,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
 	public List<Product> getAllProducts() {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 
-		String queryString = "SELECT DISTINCT p FROM Product p JOIN FETCH p.category ";
+		String queryString = "SELECT DISTINCT p FROM Product p JOIN FETCH p.category ORDER BY p.productId DESC";
 		TypedQuery<Product> query = session.createQuery(queryString, Product.class);
 		query.setMaxResults(4);
 		query.setFirstResult(0);
@@ -71,8 +92,7 @@ public class ProductServiceImpl implements ProductService {
 				+ "    Price p2 ON p.product_id = p2.product_id LEFT JOIN \n"
 				+ "    Stock s ON p.product_id = s.product_id GROUP BY p.product_id,\n"
 				+ "    p.product_code, p.product_description, p.product_name, p2.price,\n"
-				+ "    p2.currency,s.inventory_available, s.location ORDER BY "
-				+ sortBy;
+				+ "    p2.currency,s.inventory_available, s.location ORDER BY " + sortBy;
 
 		Query query = session.createNativeQuery(queryString);
 		query.setResultTransformer(Transformers.aliasToBean(Productsorted.class));

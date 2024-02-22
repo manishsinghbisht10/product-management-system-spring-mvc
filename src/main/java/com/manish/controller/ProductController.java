@@ -42,12 +42,13 @@ public class ProductController {
 			productResponse.setProductDescription(p.getProductDescription());
 			productResponse.setProductCode(p.getProductCode());
 			productResponse.setProductId((Long) p.getProductId());
-			
+
 			List<Category> categoryDB = p.getCategory();
-			String string="";
+			String string = "";
 			if (!Objects.isNull(categoryDB))
-			for(int i=0;i<categoryDB.size();i++)string=string+categoryDB.get(i).getCategoryName()+",";
-				productResponse.setCategoryName(string);
+				for (int i = 0; i < categoryDB.size(); i++)
+					string = string + categoryDB.get(i).getCategoryName() + ",";
+			productResponse.setCategoryName(string);
 
 			Price priceDB = p.getPrice();
 			if (!Objects.isNull(priceDB)) {
@@ -105,14 +106,12 @@ public class ProductController {
 		try {
 			productService.Save(product);
 			model.addAttribute("successMessage", "Product saved successfully!");
-		} catch (DataIntegrityViolationException ex) {
+		} catch (com.manish.customExceptions.DuplicateKeyException ex) {
 			ex.printStackTrace();
-			model.addAttribute("errorMessage", "Record already Exists in DB");
-		} catch (com.manish.customExceptions.DuplicateKeyException e) {
-			System.out.println("hello");
-			System.out.println("hello");
+			model.addAttribute("errorMessage", ex.getMessage());
+		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
-			model.addAttribute("errorMessage", e.getMessage());
+			model.addAttribute("errorMessage", "Duplicate Product code in Database");
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", "Some exception has occured please try again");

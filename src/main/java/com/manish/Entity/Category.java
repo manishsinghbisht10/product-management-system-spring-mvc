@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = "category_name") })
 public class Category {
 
 	@Id
