@@ -2,9 +2,8 @@ package com.manish.service;
 
 import java.util.List;
 import com.manish.Entity.Product;
+import com.manish.customExceptions.DuplicateKeyException;
 import com.manish.model.Productsorted;
-
-import CustomExceptions.DuplicateKeyException;
 
 public interface ProductService {
 

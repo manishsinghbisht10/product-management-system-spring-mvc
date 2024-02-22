@@ -1,4 +1,4 @@
-package CustomExceptions;
+package com.manish.customExceptions;
 
 public class DuplicateKeyException extends Exception {
 

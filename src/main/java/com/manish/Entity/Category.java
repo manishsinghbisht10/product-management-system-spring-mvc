@@ -22,6 +22,14 @@ public class Category {
 	@Column(name = "category_name")
 	private String categoryName;
 
-	@OneToMany(mappedBy = "category")
+	@ManyToMany(mappedBy = "category",cascade = CascadeType.ALL)
 	private List<Product> product;
+	
+	  @Override
+	    public String toString() {
+	        return "Category{" +
+	                "categoryCode=" + categoryCode +
+	                ", categoryName='" + categoryName + '\'' +
+	                '}';
+	    }
 }

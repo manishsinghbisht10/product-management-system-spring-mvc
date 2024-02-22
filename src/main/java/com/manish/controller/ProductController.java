@@ -21,8 +21,6 @@ import com.manish.model.SaveProduct;
 import com.manish.service.CategoryService;
 import com.manish.service.ProductService;
 
-import CustomExceptions.DuplicateKeyException;
-
 @Controller
 public class ProductController {
 
@@ -37,7 +35,6 @@ public class ProductController {
 		List<Product> productDB = productService.getAllProducts();
 
 		List<ProductResponse> productLists = new ArrayList<>();
-
 		for (Product p : productDB) {
 			ProductResponse productResponse = new ProductResponse();
 
@@ -45,10 +42,12 @@ public class ProductController {
 			productResponse.setProductDescription(p.getProductDescription());
 			productResponse.setProductCode(p.getProductCode());
 			productResponse.setProductId((Long) p.getProductId());
-
-			Category categoryDB = p.getCategory();
+			
+			List<Category> categoryDB = p.getCategory();
+			String string="";
 			if (!Objects.isNull(categoryDB))
-				productResponse.setCategoryName(categoryDB.getCategoryName());
+			for(int i=0;i<categoryDB.size();i++)string=string+categoryDB.get(i).getCategoryName()+",";
+				productResponse.setCategoryName(string);
 
 			Price priceDB = p.getPrice();
 			if (!Objects.isNull(priceDB)) {
@@ -78,37 +77,38 @@ public class ProductController {
 		Product product = new Product();
 		Price price = new Price();
 		Stock stock = new Stock();
-		Category category = new Category();
-
 		price.setPrice(saveProduct.getProductPrice());
 		price.setCurrency(saveProduct.getCurrency());
 
 		stock.setLocation(saveProduct.getLocation());
 		stock.setInventoryAvailable(saveProduct.getInvaentoryAvailable());
 
-		category.setCategoryName(saveProduct.getCategoryName());
-
 		product.setProductCode(saveProduct.getProductCode());
 		product.setProductDescription(saveProduct.getProductDescription());
 		product.setProductName(saveProduct.getProductName());
 
-		product.setCategory(category);
 		product.setPrice(price);
 		product.setStock(stock);
 
 		price.setProduct(product);
 		stock.setProduct(product);
 
-		List<Category> categories = categoryService.saveCategory(category.getCategoryName());
-		product.setCategory(categories.get(0));
+		String categories[] = saveProduct.getCategoryName().split(",");
+		List<Category> categoriesList = new ArrayList<>();
+		for (int i = 0; i < categories.length; i++) {
 
+			Category categoryDb = categoryService.saveCategory(categories[i]);
+			categoriesList.add(categoryDb);
+
+		}
+		product.setCategory(categoriesList);
 		try {
 			productService.Save(product);
 			model.addAttribute("successMessage", "Product saved successfully!");
 		} catch (DataIntegrityViolationException ex) {
 			ex.printStackTrace();
 			model.addAttribute("errorMessage", "Record already Exists in DB");
-		} catch (CustomExceptions.DuplicateKeyException e) {
+		} catch (com.manish.customExceptions.DuplicateKeyException e) {
 			System.out.println("hello");
 			System.out.println("hello");
 			e.printStackTrace();

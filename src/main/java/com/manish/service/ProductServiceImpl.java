@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 import com.manish.Entity.Product;
+import com.manish.customExceptions.DuplicateKeyException;
 import com.manish.model.Productsorted;
 
-import CustomExceptions.DuplicateKeyException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
 	public List<Product> getAllProducts() {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 
-		String queryString = "FROM Product p ORDER BY p.productId DESC";
+		String queryString = "SELECT DISTINCT p FROM Product p JOIN FETCH p.category ";
 		TypedQuery<Product> query = session.createQuery(queryString, Product.class);
 		query.setMaxResults(4);
 		query.setFirstResult(0);
@@ -62,11 +62,17 @@ public class ProductServiceImpl implements ProductService {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		if (sortBy.isBlank())
 			sortBy = "p.product_id DESC";
-		String queryString = "SELECT p.product_id,p.product_code, p.product_description, p.product_name, \n"
-				+ " p2.price as product_price, p2.currency, s.inventory_available, s.location, \n"
-				+ " c.category_name FROM Product p \n" + " INNER JOIN Price p2 ON p.product_id = p2.product_id  \n"
-				+ " INNER JOIN Stock s ON s.product_id = p.product_id  \n"
-				+ " INNER JOIN Category c ON c.category_code = p.category ORDER BY " + sortBy;
+		String queryString = "SELECT  p.product_id,\n"
+				+ "    GROUP_CONCAT(c.category_name) AS category_name, p.product_code,\n"
+				+ "    p.product_description,   p.product_name,  p2.price AS product_price,\n"
+				+ "    p2.currency, s.inventory_available, s.location FROM \n"
+				+ "    Product p LEFT JOIN product_category pc ON p.product_id = pc.product_id\n"
+				+ "	   LEFT JOIN Category c ON pc.category_code = c.category_code LEFT JOIN \n"
+				+ "    Price p2 ON p.product_id = p2.product_id LEFT JOIN \n"
+				+ "    Stock s ON p.product_id = s.product_id GROUP BY p.product_id,\n"
+				+ "    p.product_code, p.product_description, p.product_name, p2.price,\n"
+				+ "    p2.currency,s.inventory_available, s.location ORDER BY "
+				+ sortBy;
 
 		Query query = session.createNativeQuery(queryString);
 		query.setResultTransformer(Transformers.aliasToBean(Productsorted.class));

@@ -1,12 +1,12 @@
 package com.manish.service;
 
-import java.util.List;
+import java.util.Objects;
+
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 import com.manish.Entity.Category;
-import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
 @Repository
@@ -17,23 +17,18 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	@Transactional
-	public List<Category> saveCategory(String name) {
+	public Category saveCategory(String name) {
 		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
 		String queryString = "FROM Category WHERE categoryName = :name";
-		TypedQuery<Category> query = session.createQuery(queryString, Category.class);
-		query.setParameter("name", name);
+		Category category = session.createQuery(queryString, Category.class).setParameter("name", name).uniqueResult();
 
-		List<Category> categories = query.getResultList();
-
-		if (categories.isEmpty()) {
-			Category category = new Category();
-			category.setCategoryName(name);
-			session.save(category);
-			TypedQuery<Category> query2 = session.createQuery(queryString, Category.class);
-			query2.setParameter("name", name);
-			categories = query.getResultList();
-		}
-		return categories;
+		if (Objects.isNull(category)) {
+			Category categorySave = new Category();
+			categorySave.setCategoryName(name);
+			session.save(categorySave);
+			return categorySave;
+		} else
+			return category;
 	}
 
 }
