@@ -45,6 +45,7 @@ public class ProductServiceImpl implements ProductService {
 			if (!Objects.isNull(categoryDB))
 				for (int i = 0; i < categoryDB.size(); i++)
 					string = string + categoryDB.get(i).getCategoryName() + ",";
+			string = string.substring(0, string.length()-1);
 			productResponse.setCategoryName(string);
 
 			Price priceDB = p.getPrice();

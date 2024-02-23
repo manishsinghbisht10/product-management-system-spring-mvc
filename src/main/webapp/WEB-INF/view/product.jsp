@@ -25,7 +25,7 @@
 } */
 .table {
 	margin: 25px auto;
-	width: 80%;
+	width: 90%;
 	border: 1px solid black;
 }
 
